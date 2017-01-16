@@ -16,8 +16,8 @@ class Network {
 
   //tworzymy warstwy
   createLayers() {
-    var lastLayer = null
-    for (var x = 0; x < this.numberOfLayers; x++) {
+    let lastLayer = null
+    for (let x = 0; x < this.numberOfLayers; x++) {
       if (x == 0) {
         this.layersList[x] = new Layer(x, 2, this.inputsCount)
       } else {
@@ -33,23 +33,23 @@ class Network {
 
   //wyliczamy nowe wyjscie dla kolejnej warstwy
   getOutputFromInput(inputData) {
-    var IDataList = new Array()
+    let IDataList = new Array()
     IDataList.push(inputData)
     $.each(this.layersList, function(index, layer) {
-      var outputData = layer.getOutputs(IDataList[IDataList.length - 1])
+      let outputData = layer.getOutputs(IDataList[IDataList.length - 1])
       IDataList.push(new dataInput(outputData.b))
     })
-    var out = new dataOutput(IDataList[IDataList.length - 1].a)
+    let out = new dataOutput(IDataList[IDataList.length - 1].a)
     return out
   }
 
 
   getLayersInputValues(inputData) {
-    var IDataList = new Array()
-    var layersInputValues = new Array()
+    let IDataList = new Array()
+    let layersInputValues = new Array()
     IDataList.push(inputData)
-    var outputValue
-    var outputData
+    let outputValue
+    let outputData
 
     $.each(this.layersList, function(index, layer) {
       outputValue = layer.getValues(IDataList[IDataList.length - 1])
@@ -63,12 +63,12 @@ class Network {
 
   //Wylicza error na podstawie wszystkich danych wejściowych
   getError(examples) {
-    var error = 0
-    var that = this
+    let error = 0
+    let that = this
 
     $.each(examples, function(index, example) {
-      var output = that.getOutputFromInput(example.input)
-      for (var x = 0; x < output.b.length; x++) {
+      let output = that.getOutputFromInput(example.input)
+      for (let x = 0; x < output.b.length; x++) {
         error += Math.pow((output.b[x] - example.output.b[x]), 2)
       }
     })
@@ -79,23 +79,23 @@ class Network {
   //Uczy sieć przykładu metodą wstecznej propagacji błędów
   learn(example) {
     // wartosci wejsciowe
-    var inputLayerValues = this.getLayersInputValues(example.input)
+    let inputLayerValues = this.getLayersInputValues(example.input)
     // wyjscie z sieci
-    var networkOutput = this.getOutputFromInput(example.input)
+    let networkOutput = this.getOutputFromInput(example.input)
     // tablica nowych wyjsc
-    var layerDelta = new Array()
+    let layerDelta = new Array()
 
     // liczymy delty dla wszystkich warstw
-    var lastLayer = this.numberOfLayers - 1
-    var delta
-    var error = 0
-    for (var x = lastLayer; x >= 0; x--) {
+    let lastLayer = this.numberOfLayers - 1
+    let delta
+    let error = 0
+    for (let x = lastLayer; x >= 0; x--) {
       // W ostatniej warstwie(wyjściowej) delta liczona jest inaczej
       if (x == lastLayer) {
         // Delt jest tyle ile wyjść
         delta = new Array()
 
-        for (var y = 0; y < 2; y++) {
+        for (let y = 0; y < 2; y++) {
           error = (example.output.b[y] - networkOutput.b[y])
           delta[y] = error * this.sigmaDerivative(inputLayerValues[x].a[y])
         }
@@ -103,9 +103,9 @@ class Network {
 
       } else {
         delta = new Array()
-        for (var y = 0; y < this.layersList[x].numberOfPerceptrons; y++) {
+        for (let y = 0; y < this.layersList[x].numberOfPerceptrons; y++) {
           delta[y] = 0
-          for (var k = 0; k < this.layersList[x + 1].numberOfPerceptrons; k++) {
+          for (let k = 0; k < this.layersList[x + 1].numberOfPerceptrons; k++) {
             error = layerDelta[x + 1].b[k] * this.layersList[x + 1].objectsList[k].weights[y]
             delta[y] += error * this.sigmaDerivative(inputLayerValues[x].a[y])
           }
@@ -117,12 +117,12 @@ class Network {
     }
 
     // zmiana wag dla wszystkich perceptronów wszystkich warstw
-    var sumComponent
-    var input = example.input
-    var that = this
+    let sumComponent
+    let input = example.input
+    let that = this
     $.each(this.layersList, function(index, layer) {
-      for (var x = 0; x < layer.numberOfPerceptrons; x++) {
-        for (var y = 0; y < layer.inputsCount; y++) {
+      for (let x = 0; x < layer.numberOfPerceptrons; x++) {
+        for (let y = 0; y < layer.inputsCount; y++) {
           sumComponent = that.etha * layerDelta[layer.number].b[x] * input.a[y]
           layer.objectsList[x].addToWeight(y, sumComponent)
         }

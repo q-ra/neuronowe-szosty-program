@@ -1,30 +1,15 @@
 function PositionArm(a, b, x0, y0){
-/*
-
-		    	  (x1,y1)
-		              o---b---o (x2,y2)
-		+-------+    / kąt beta)
-		|    	|  a
-		|       | /
-		|	 	|/
-		|(x0,y0)o Kąt alpha)
-		|	 	|
-		+-------+
-
-
-*/
+  this.a = a
+  this.b = b
+  this.x0 = x0
+  this.y0 = y0
 	this.alpha = 0
 	this.beta = 0
-	this.a = a
-	this.b = b
-	this.x0 = x0
-	this.y0 = y0
 	this.x1 = 0
 	this.y1 = 0
 	this.x2 = 0
 	this.y2 = 0
 	this.piHalf = Math.PI / 2
-  this.PI = Math.PI
 
 	// wylicza polozenie lokcia i dloni dla zadanych katow z przedzialu (0, PI)
 	this.calculatePosition = function(inputAlpha, inputBeta){
@@ -39,7 +24,7 @@ function PositionArm(a, b, x0, y0){
 			this.y1 = this.y0 + this.a * Math.sin(this.piHalf - this.alpha)
 		}
 
-		var alphaTmp = this.alpha + this.beta + this.piHalf
+		let alphaTmp = this.alpha + this.beta + this.piHalf
 		this.x2 = this.x1 + this.b * Math.cos(alphaTmp)
 		this.y2 = this.y1 - this.b * Math.sin(alphaTmp)
 
@@ -50,17 +35,17 @@ function PositionArm(a, b, x0, y0){
 	// zwraca znormalizowane wejscie do obrobki przez siec warstwowa (N=2, M=2)
 	this.normalize = function(){
 		// wyjscie
-		var output = []
+		let output = []
 		output[0]  = this.alpha  / Math.PI * 0.6 + 0.2
 		output[1]   = this.beta / Math.PI * 0.6 + 0.2
-		var output = new dataOutput(output)
+		output = new dataOutput(output)
 		// wejscie
-		var input = []
+		let input = []
 		input[0] = (this.x2 - this.x0) / (this.a + this.b) - 0.2
 		input[1] = (this.y2 - this.y0) / (this.a + this.b) - 0.2
-		var input = new dataInput(input)
+		input = new dataInput(input)
 
-		var learningExample = new LearningExample( input, output, 1 )
+		let learningExample = new LearningExample( input, output, 1 )
 		return learningExample
 	}
 
