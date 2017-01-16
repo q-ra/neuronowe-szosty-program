@@ -20,7 +20,7 @@ $(document).ready(function(){
 	linie[0] = svg.line(0, 200, 75, 200, {stroke: 'grey'})
 	linie[1] = svg.line(75, 200, 150, 200, {stroke: 'grey'})
 	laczenie = svg.circle(75, 200, 1, {fill: 'none', stroke: 'red', strokeWidth: 4})
-	koniec   = svg.circle(150, 200, 1, {fill: 'none', stroke: 'green', strokeWidth: 10})
+	koniec   = svg.circle(150, 200, 1, {fill: 'none', stroke: 'black', strokeWidth: 10})
 
 	var SVGpunkt = []
 	var punkt = []

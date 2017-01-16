@@ -24,6 +24,7 @@ function PositionArm(a, b, x0, y0){
 	this.x2 = 0
 	this.y2 = 0
 	this.piHalf = Math.PI / 2
+  this.PI = Math.PI
 
 	// wylicza polozenie lokcia i dloni dla zadanych katow z przedzialu (0, PI)
 	this.calculatePosition = function(inputAlpha, inputBeta){
