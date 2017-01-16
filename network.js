@@ -1,146 +1,143 @@
-
-
-
 //klasa sieci warstw
 
 class Network {
-constructor (Layers, Objects, inputsCount, outputsCount){
-	this.numberOfLayers = Layers;
-	this.numberOfObjects = Objects;
-	this.inputsCount = inputsCount;
-	this.outputsCount = outputsCount;
-	this.etha = 0.4;
-	this.layersList = new Array();
-}
+  constructor(Layers, Objects, inputsCount, outputsCount) {
+    this.numberOfLayers = Layers
+    this.numberOfPerceptrons = Objects
+    this.inputsCount = inputsCount
+    this.outputsCount = outputsCount
+    this.etha = 0.4
+    this.layersList = new Array()
+  }
 
-	main (){
-		this.createLayers();
-	}
+  init() {
+    this.createLayers()
+  }
 
-	//tworzymy warstwy
-	createLayers () {
-		var lastLayer = null;
-		for( var i = 0; i < this.numberOfLayers; i++ ) {
-			if( i == 0 ) {
-				this.layersList[i] = new Layer( i, 2, this.inputsCount);
-			} else {
-				lastLayer = this.layersList[this.layersList.length - 1];
-				if( i == (this.numberOfLayers -1) )
-					this.layersList[i] = new Layer(i, 2, lastLayer.numberOfObjects);
-				else
-					this.layersList[i] = new Layer(i, this.numberOfObjects, lastLayer.numberOfObjects);
-			}
-			this.layersList[i].main();
-		}
-	}
+  //tworzymy warstwy
+  createLayers() {
+    var lastLayer = null
+    for (var x = 0; x < this.numberOfLayers; x++) {
+      if (x == 0) {
+        this.layersList[x] = new Layer(x, 2, this.inputsCount)
+      } else {
+        lastLayer = this.layersList[this.layersList.length - 1]
+        if (x == (this.numberOfLayers - 1))
+          this.layersList[x] = new Layer(x, 2, lastLayer.numberOfPerceptrons)
+        else
+          this.layersList[x] = new Layer(x, this.numberOfPerceptrons, lastLayer.numberOfPerceptrons)
+      }
+      this.layersList[x].init()
+    }
+  }
 
-	//wyliczamy nowe wyjscie dla kolejnej warstwy
-	getOutputFromInput (inputData) {
-		var IDataList = new Array();
-		IDataList.push(inputData);
-		$.each(this.layersList, function( index, layer ) {
-			var outputData = layer.getOutputs(IDataList[ IDataList.length -1 ]);
-			IDataList.push(new dataInput(outputData.b));
-		})
-		var out = new dataOutput (IDataList[IDataList.length -1 ].a);
-		return out;
-	}
+  //wyliczamy nowe wyjscie dla kolejnej warstwy
+  getOutputFromInput(inputData) {
+    var IDataList = new Array()
+    IDataList.push(inputData)
+    $.each(this.layersList, function(index, layer) {
+      var outputData = layer.getOutputs(IDataList[IDataList.length - 1])
+      IDataList.push(new dataInput(outputData.b))
+    })
+    var out = new dataOutput(IDataList[IDataList.length - 1].a)
+    return out
+  }
 
 
-	getLayersInputValues (inputData) {
-		var IDataList = new Array();
-		var layersInputValues = new Array();
-		IDataList.push(inputData);
-		var outputValue;
-		var outputData;
+  getLayersInputValues(inputData) {
+    var IDataList = new Array()
+    var layersInputValues = new Array()
+    IDataList.push(inputData)
+    var outputValue
+    var outputData
 
-		$.each(this.layersList, function( index, layer ) {
-			outputValue = layer.getValues(IDataList[IDataList.length -1 ]);
-			layersInputValues.push( new dataInput (outputValue.b) );
-			outputData = layer.getOutputs(IDataList[IDataList.length -1 ],index);
-			IDataList.push( new dataInput (outputData.b) );
-		});
+    $.each(this.layersList, function(index, layer) {
+      outputValue = layer.getValues(IDataList[IDataList.length - 1])
+      layersInputValues.push(new dataInput(outputValue.b))
+      outputData = layer.getOutputs(IDataList[IDataList.length - 1], index)
+      IDataList.push(new dataInput(outputData.b))
+    })
 
-		return layersInputValues;
-	}
+    return layersInputValues
+  }
 
-	//Wylicza error na podstawie wszystkich danych wejściowych
-	getError (examples){
-		var error = 0;
-		var that = this;
+  //Wylicza error na podstawie wszystkich danych wejściowych
+  getError(examples) {
+    var error = 0
+    var that = this
 
-		$.each(examples, function( index, example ) {
-			var output = that.getOutputFromInput(example.input);
-			for( var i = 0; i < output.b.length; i++ ) {
-				error += Math.pow(( output.b[i] - example.output.b[i] ), 2);
-			}
-		});
+    $.each(examples, function(index, example) {
+      var output = that.getOutputFromInput(example.input)
+      for (var x = 0; x < output.b.length; x++) {
+        error += Math.pow((output.b[x] - example.output.b[x]), 2)
+      }
+    })
 
-		return error/2;
-	}
+    return error / 2
+  }
 
-	//Uczy sieć przykładu metodą wstecznej propagacji błędów
-	learn (example){
-		// wartosci wejsciowe
-		var inputLayerValues = this.getLayersInputValues( example.input );
-		// wyjscie z sieci
-		var networkOutput = this.getOutputFromInput(example.input);
-		// tablica nowych wyjsc
-		var layerDelta = new Array();
+  //Uczy sieć przykładu metodą wstecznej propagacji błędów
+  learn(example) {
+    // wartosci wejsciowe
+    var inputLayerValues = this.getLayersInputValues(example.input)
+    // wyjscie z sieci
+    var networkOutput = this.getOutputFromInput(example.input)
+    // tablica nowych wyjsc
+    var layerDelta = new Array()
 
-		// liczymy delty dla wszystkich warstw
-		var lastLayer = this.numberOfLayers - 1;
-		var delta;
-		var error = 0;
-		for( var i = lastLayer; i >= 0; i--) {
-			// W ostatniej warstwie(wyjściowej) delta liczona jest inaczej
-			if( i == lastLayer ) {
-				// Delt jest tyle ile wyjść
-				delta = new Array();
+    // liczymy delty dla wszystkich warstw
+    var lastLayer = this.numberOfLayers - 1
+    var delta
+    var error = 0
+    for (var x = lastLayer; x >= 0; x--) {
+      // W ostatniej warstwie(wyjściowej) delta liczona jest inaczej
+      if (x == lastLayer) {
+        // Delt jest tyle ile wyjść
+        delta = new Array()
 
-				for( var j = 0; j < 2; j++ ) {
-					error = ( example.output.b[j] - networkOutput.b[j] );
-					delta[j] = error * this.sigmaDerivative(inputLayerValues[i].a[j]);
-				}
-				layerDelta[i] = new dataOutput(delta);
+        for (var y = 0; y < 2; y++) {
+          error = (example.output.b[y] - networkOutput.b[y])
+          delta[y] = error * this.sigmaDerivative(inputLayerValues[x].a[y])
+        }
+        layerDelta[x] = new dataOutput(delta)
 
-			} else {
-				delta = new Array();
-				for( var j = 0; j < this.layersList[i].numberOfObjects; j++ ) {
-					delta[j] = 0;
-					for( var k = 0; k < this.layersList[i+1].numberOfObjects; k++ ) {
-						error = layerDelta[i+1].b[k] * this.layersList[i+1].objectsList[k].weights[j];
-						delta[j] += error * this.sigmaDerivative( inputLayerValues[i].a[j] );
-					}
-					layerDelta[i] = new dataOutput(delta);
-				}
+      } else {
+        delta = new Array()
+        for (var y = 0; y < this.layersList[x].numberOfPerceptrons; y++) {
+          delta[y] = 0
+          for (var k = 0; k < this.layersList[x + 1].numberOfPerceptrons; k++) {
+            error = layerDelta[x + 1].b[k] * this.layersList[x + 1].objectsList[k].weights[y]
+            delta[y] += error * this.sigmaDerivative(inputLayerValues[x].a[y])
+          }
+          layerDelta[x] = new dataOutput(delta)
+        }
 
-			}
-			error = 0;
-		}
+      }
+      error = 0
+    }
 
-		// zmiana wag dla wszystkich perceptronów wszystkich warstw
-		var sumComponent;
-		var input = example.input;
-		var that = this;
-		$.each(this.layersList, function( index, layer ) {
-			for( var i = 0; i < layer.numberOfObjects; i++ ) {
-				for( var j = 0; j < layer.inputsCount; j++ ) {
-					sumComponent = that.etha * layerDelta[ layer.number ].b[i] * input.a[j];
-					layer.objectsList[i].addToWeight(j, sumComponent);
-				}
-			}
-			input = new dataInput(layer.getOutputs(input).b);
-		});
-	}
+    // zmiana wag dla wszystkich perceptronów wszystkich warstw
+    var sumComponent
+    var input = example.input
+    var that = this
+    $.each(this.layersList, function(index, layer) {
+      for (var x = 0; x < layer.numberOfPerceptrons; x++) {
+        for (var y = 0; y < layer.inputsCount; y++) {
+          sumComponent = that.etha * layerDelta[layer.number].b[x] * input.a[y]
+          layer.objectsList[x].addToWeight(y, sumComponent)
+        }
+      }
+      input = new dataInput(layer.getOutputs(input).b)
+    })
+  }
 
-	sigma (x){
-		return 1 / (1 + Math.exp(-x));
-	}
+  sigma(x) {
+    return 1 / (1 + Math.exp(-x))
+  }
 
-	// Pochodna funkcji sigma
-	sigmaDerivative (x) {
-		return this.sigma(x)*(1-this.sigma(x));
-	}
+  // Pochodna funkcji sigma
+  sigmaDerivative(x) {
+    return this.sigma(x) * (1 - this.sigma(x))
+  }
 
 }
