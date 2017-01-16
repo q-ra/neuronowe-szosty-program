@@ -5,7 +5,7 @@ var wymiar = 50;
 var NauczycielSamples = [];
 var linie = [];
 var laczenie;
-var koniec; 
+var koniec;
 //tworzymy okno o wymiarach 'wielkosc*wielkosc'
 function CreateGui(wielkosc)
 {
@@ -28,9 +28,7 @@ $(document).ready(function(){
 	var SVGpunkt = [];
 	var punkt = [];
 	var count = 0;
-	// Get point in global SVG space
 	function getMousePos(canvas, evt) {
-	 	//alert(evt.clientX+"="+evt.clientY);
 	    return {
 	        x: evt.clientX - 160,
 	        y: evt.clientY - 105
@@ -38,22 +36,10 @@ $(document).ready(function(){
 	}
 	$("svg").click(function(e){
 		var coord = getMousePos(svg, e);
-		//console.log(coord.x+"/"+coord.y);
 		CreateRobot.aktualizuj(coord);
 		count ++;
 	});
-	/*$("svg").mousedown(function(){
-		$('svg').bind('mousemove',function(e){
-			var coord = getMousePos(svg, e);
-			console.log(coord.x+"/"+coord.y);
-			SVGpunkt[count] = svg.circle(coord.x, coord.y, 1, {fill: 'none', stroke: 'red', strokeWidth: 4});
-			punkt[count] = new Punkt(count, coord);
-			count ++;
-		});
-		$('svg').bind('mouseup mouseleave',function(){
-				$('svg').unbind('mousemove');
-		});
-	});*/
+
 
 
 	$("#odznacz").click(function(){
@@ -131,27 +117,27 @@ function CreateRobots(){
 
 	//nauka robota
 	this.learnNetwork = function()
-	{	
+	{
 		var example;
 		var error = 0;
 		for(var i=0; i<this.learningIterations; i++)
 		{
 			var count = Math.floor((Math.random() * this.examples.length));
 			example = this.examples[count];
-			//console.log(example+"="+count);	
+			//console.log(example+"="+count);
 			this.network.learn(example);
-			
+
 			if( i % 2000 == 0 ) {
 				error = this.network.getError(this.examples);
 				console.log("Error: " + error);
 			}
-			
+
 		}
-		
+
 	}
 
 	//generowanie przykladow uczacych
-	this.randomLearningExamples = function() 
+	this.randomLearningExamples = function()
 	{
 		while( this.examples.length <= this.examplesCount ) {
 			// Losuje kąt alfa i beta na których podstawie obliczam punkt dłoni robota
@@ -159,9 +145,9 @@ function CreateRobots(){
 			var beta = Math.random() * this.positionArm.PI;
 			//console.log(alpha+"="+beta);
 			var learningExample = this.positionArm.calculatePosition(alpha, beta);
-			
+
 			// Wybieram tylko dobre przykłady uczące
-			if (this.positionArm.x2 < this.a+this.b && 
+			if (this.positionArm.x2 < this.a+this.b &&
 				this.positionArm.y2 < (this.a+this.b + this.y) &&
 				this.positionArm.y2 > 50 &&
 				this.positionArm.x2 > 0 &&
@@ -169,11 +155,11 @@ function CreateRobots(){
 				this.positionArm.beta > 0 && this.positionArm.beta < this.positionArm.PI)
 				{
 					this.examples.push(learningExample);
-				} 
+				}
 
 		}
 	}
-	
+
 	//przesuwanie ręki
 	this.aktualizuj = function(coord) {
 		// Tu normalizuje dane wejściowe tak jak w metodzie normalize ( klasa PositionArm )
@@ -199,7 +185,7 @@ function CreateRobots(){
 		linie[1] = svg.line(this.positionArm.x1, this.positionArm.y1, this.positionArm.x2, this.positionArm.y2, {stroke: 'blue'});
 		var laczenie = svg.circle(this.positionArm.x1, this.positionArm.y1, 1, {fill: 'none', stroke: 'red', strokeWidth: 4});
 		var koniec   = svg.circle(this.positionArm.x2, this.positionArm.y2, 1, {fill: 'none', stroke: 'green', strokeWidth: 10});
-		
+
 	}
 
 }

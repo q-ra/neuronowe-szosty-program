@@ -10,7 +10,6 @@ class Layer{
   	this.objectsList = new Array();
   }
 
-
 	main (){
 		if( this.numberOfObjects == 0 ) {
 			this.numberOfObjects = Math.floor((Math.random() * (10-5+1)+5));
@@ -42,8 +41,6 @@ class Layer{
 		var outputs = new Array();
 		for( var i = 0; i < this.numberOfObjects; i++ ) {
 			outputs[i] = this.objectsList[i].calculateOutput( inputData );
-			//alert('stop klatka');
-			//console.log("warstwa: "+index+" perceptron: "+ i + " wejscie: "+ inputData.a + " wyjscie: "+ outputs[i]);
 		}
 		return new dataOutput(outputs);
 	}
