@@ -1,69 +1,24 @@
-//klasa warstwy
 
-function Layer(num, numObject, numberOfInputs){
-	this.inputsCount = numberOfInputs;
-	this.number = num;
-	// ilosc perceptronow
-	this.numberOfObjects = numObject;
-	// lista perceptronow
-	this.objectsList = new Array();
-
-	this.main = function(){
-		if( this.numberOfObjects == 0 ) {
-			this.numberOfObjects = Math.floor((Math.random() * (10-5+1)+5));
-		} else {
-			this.numberOfObjects = this.numberOfObjects;
-		}
-		this.createObjects();
-	}
-	
-
-	this.createObjects = function() {
-		for( var i = 0; i < this.numberOfObjects; i++ ) {
-			this.objectsList[i] = new Perceptron(this.inputsCount);
-			this.objectsList[i].main();
-		}
-	}
-	
-	// Metoda zwraca wyjścia ( iloczyn skalarny wag i wejść przed zaaplikowaniem funkcji aktywującej sigma)
-	this.getValues = function(inputData) {
-		var outputs = new Array();
-		for( var i = 0 ; i < this.numberOfObjects; i++ ) {
-			outputs[i] = this.objectsList[i].calculateValue( inputData );
-		}
-		return new dataOutput(outputs);
-	}
-	
-	//Metoda zwraca wyjścia ze wszystkich perceptronów po zaaplikowaniu funkcji aktywującej
-	this.getOutputs = function(inputData,index) {
-		var outputs = new Array();
-		for( var i = 0; i < this.numberOfObjects; i++ ) { 
-			outputs[i] = this.objectsList[i].calculateOutput( inputData );
-			//alert('stop klatka');
-			//console.log("warstwa: "+index+" perceptron: "+ i + " wejscie: "+ inputData.a + " wyjscie: "+ outputs[i]);
-		}
-		return new dataOutput(outputs);
-	}
-
-}
 
 
 //klasa sieci warstw
 
-function Network(Layers, Objects, inputsCount, outputsCount){
+class Network {
+constructor (Layers, Objects, inputsCount, outputsCount){
 	this.numberOfLayers = Layers;
 	this.numberOfObjects = Objects;
 	this.inputsCount = inputsCount;
 	this.outputsCount = outputsCount;
 	this.etha = 0.4;
 	this.layersList = new Array();
-	
-	this.main = function(){
+}
+
+	main (){
 		this.createLayers();
 	}
-	
+
 	//tworzymy warstwy
-	this.createLayers = function() {
+	createLayers () {
 		var lastLayer = null;
 		for( var i = 0; i < this.numberOfLayers; i++ ) {
 			if( i == 0 ) {
@@ -80,7 +35,7 @@ function Network(Layers, Objects, inputsCount, outputsCount){
 	}
 
 	//wyliczamy nowe wyjscie dla kolejnej warstwy
-	this.getOutputFromInput = function(inputData) {
+	getOutputFromInput (inputData) {
 		var IDataList = new Array();
 		IDataList.push(inputData);
 		$.each(this.layersList, function( index, layer ) {
@@ -90,27 +45,27 @@ function Network(Layers, Objects, inputsCount, outputsCount){
 		var out = new dataOutput (IDataList[IDataList.length -1 ].a);
 		return out;
 	}
-	
 
-	this.getLayersInputValues = function(inputData) {
+
+	getLayersInputValues (inputData) {
 		var IDataList = new Array();
 		var layersInputValues = new Array();
 		IDataList.push(inputData);
 		var outputValue;
 		var outputData;
-		
+
 		$.each(this.layersList, function( index, layer ) {
 			outputValue = layer.getValues(IDataList[IDataList.length -1 ]);
 			layersInputValues.push( new dataInput (outputValue.b) );
 			outputData = layer.getOutputs(IDataList[IDataList.length -1 ],index);
 			IDataList.push( new dataInput (outputData.b) );
 		});
-		
+
 		return layersInputValues;
 	}
-	
+
 	//Wylicza error na podstawie wszystkich danych wejściowych
-	this.getError = function(examples){
+	getError (examples){
 		var error = 0;
 		var that = this;
 
@@ -120,19 +75,19 @@ function Network(Layers, Objects, inputsCount, outputsCount){
 				error += Math.pow(( output.b[i] - example.output.b[i] ), 2);
 			}
 		});
-		
+
 		return error/2;
 	}
-	
+
 	//Uczy sieć przykładu metodą wstecznej propagacji błędów
-	this.learn = function(example){
+	learn (example){
 		// wartosci wejsciowe
 		var inputLayerValues = this.getLayersInputValues( example.input );
 		// wyjscie z sieci
 		var networkOutput = this.getOutputFromInput(example.input);
-		// tablica nowych wyjsc 
+		// tablica nowych wyjsc
 		var layerDelta = new Array();
-		
+
 		// liczymy delty dla wszystkich warstw
 		var lastLayer = this.numberOfLayers - 1;
 		var delta;
@@ -148,7 +103,7 @@ function Network(Layers, Objects, inputsCount, outputsCount){
 					delta[j] = error * this.sigmaDerivative(inputLayerValues[i].a[j]);
 				}
 				layerDelta[i] = new dataOutput(delta);
-				
+
 			} else {
 				delta = new Array();
 				for( var j = 0; j < this.layersList[i].numberOfObjects; j++ ) {
@@ -159,11 +114,11 @@ function Network(Layers, Objects, inputsCount, outputsCount){
 					}
 					layerDelta[i] = new dataOutput(delta);
 				}
-	
+
 			}
 			error = 0;
 		}
-		
+
 		// zmiana wag dla wszystkich perceptronów wszystkich warstw
 		var sumComponent;
 		var input = example.input;
@@ -179,12 +134,12 @@ function Network(Layers, Objects, inputsCount, outputsCount){
 		});
 	}
 
-	this.sigma = function(x){
+	sigma (x){
 		return 1 / (1 + Math.exp(-x));
 	}
-	
+
 	// Pochodna funkcji sigma
-	this.sigmaDerivative = function(x) {
+	sigmaDerivative (x) {
 		return this.sigma(x)*(1-this.sigma(x));
 	}
 
