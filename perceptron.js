@@ -1,8 +1,6 @@
 class Perceptron {
   constructor(numberOfInputs) {
-    this.weights = new Array()
-    this.weightRandomStart = -1
-    this.weightRandomEnd = 1
+    this.weights = []
     this.weightsCount = numberOfInputs
   }
 
@@ -19,15 +17,12 @@ class Perceptron {
     return this.sigma(x) * (1 - this.sigma(x))
   }
 
-
   //Losujemy małe wagi
   randomWeights() {
-    let random
-    let result
+    this.weightRandomStart = -1
+    this.weightRandomEnd = 1
     for (let x = 0; x < this.weightsCount; x++) {
-      random = Math.random()
-      result = this.weightRandomStart + (random * (this.weightRandomEnd - this.weightRandomStart))
-      this.weights[x] = result
+      this.weights[x] = this.weightRandomStart + (Math.random() * (this.weightRandomEnd - this.weightRandomStart))
     }
   }
 
@@ -42,12 +37,11 @@ class Perceptron {
 
   //Oblicza aktywację perceptronu
   calculateOutput(inputData) {
-    let x = this.calculateValue(inputData)
-    return this.sigma(x)
+    return this.sigma(this.calculateValue(inputData))
   }
 
   addToWeight(index, value) {
-    this.weights[index] = this.weights[index] + value
+    this.weights[index] += value
   }
 
 }

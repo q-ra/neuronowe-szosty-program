@@ -31,7 +31,6 @@ function PositionArm(a, b, x0, y0){
 		return this.normalize()
 	}
 
-
 	// zwraca znormalizowane wejscie do obrobki przez siec warstwowa (N=2, M=2)
 	this.normalize = function(){
 		// wyjscie

@@ -7,7 +7,7 @@ class Network {
     this.inputsCount = inputsCount
     this.outputsCount = outputsCount
     this.etha = 0.4
-    this.layersList = new Array()
+    this.layersList = []
   }
 
   init() {
@@ -33,7 +33,7 @@ class Network {
 
   //wyliczamy nowe wyjscie dla kolejnej warstwy
   getOutputFromInput(inputData) {
-    let IDataList = new Array()
+    let IDataList = []
     IDataList.push(inputData)
     $.each(this.layersList, function(index, layer) {
       let outputData = layer.getOutputs(IDataList[IDataList.length - 1])
@@ -45,8 +45,8 @@ class Network {
 
 
   getLayersInputValues(inputData) {
-    let IDataList = new Array()
-    let layersInputValues = new Array()
+    let IDataList = []
+    let layersInputValues = []
     IDataList.push(inputData)
     let outputValue
     let outputData
@@ -83,7 +83,7 @@ class Network {
     // wyjscie z sieci
     let networkOutput = this.getOutputFromInput(example.input)
     // tablica nowych wyjsc
-    let layerDelta = new Array()
+    let layerDelta = []
 
     // liczymy delty dla wszystkich warstw
     let lastLayer = this.numberOfLayers - 1
@@ -93,7 +93,7 @@ class Network {
       // W ostatniej warstwie(wyjściowej) delta liczona jest inaczej
       if (x == lastLayer) {
         // Delt jest tyle ile wyjść
-        delta = new Array()
+        delta = []
 
         for (let y = 0; y < 2; y++) {
           error = (example.output.b[y] - networkOutput.b[y])
@@ -102,7 +102,7 @@ class Network {
         layerDelta[x] = new dataOutput(delta)
 
       } else {
-        delta = new Array()
+        delta = []
         for (let y = 0; y < this.layersList[x].numberOfPerceptrons; y++) {
           delta[y] = 0
           for (let k = 0; k < this.layersList[x + 1].numberOfPerceptrons; k++) {
