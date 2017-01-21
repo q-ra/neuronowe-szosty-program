@@ -14,7 +14,7 @@ class Layer {
   }
 
   createObjects() {
-    for (let x = 0; x < this.numberOfPerceptrons; x++) {
+    for (let x = 0; x < this.numberOfPerceptrons; x += 1) {
       this.objectsList[x] = new Perceptron(this.inputsCount)
       this.objectsList[x].init()
     }
@@ -23,7 +23,7 @@ class Layer {
   // Metoda zwraca wyjścia ( iloczyn skalarny wag x wejść przed zaaplikowaniem funkcji aktywującej sigma)
   getValues(inputData) {
     let outputs = []
-    for (let x = 0; x < this.numberOfPerceptrons; x++) {
+    for (let x = 0; x < this.numberOfPerceptrons; x += 1) {
       outputs[x] = this.objectsList[x].calculateValue(inputData)
     }
     return new dataOutput(outputs)
@@ -32,7 +32,7 @@ class Layer {
   //Metoda zwraca wyjścia ze wszystkich perceptronów po zaaplikowaniu funkcji aktywującej
   getOutputs(inputData, index) {
     let outputs = []
-    for (let x = 0; x < this.numberOfPerceptrons; x++) {
+    for (let x = 0; x < this.numberOfPerceptrons; x += 1) {
       outputs[x] = this.objectsList[x].calculateOutput(inputData)
     }
     return new dataOutput(outputs)

@@ -21,7 +21,7 @@ class Perceptron {
   randomWeights() {
     this.weightRandomStart = -1
     this.weightRandomEnd = 1
-    for (let x = 0; x < this.weightsCount; x++) {
+    for (let x = 0; x < this.weightsCount; x += 1) {
       this.weights[x] = this.weightRandomStart + (Math.random() * (this.weightRandomEnd - this.weightRandomStart))
     }
   }
@@ -29,7 +29,7 @@ class Perceptron {
   //Oblicza iloczyn wag x danych wejściowych
   calculateValue(inputData) {
     let sum = 0
-    for (let x = 0; x < this.weightsCount; x++) {
+    for (let x = 0; x < this.weightsCount; x += 1) {
       sum += inputData.a[x] * this.weights[x]
     }
     return sum

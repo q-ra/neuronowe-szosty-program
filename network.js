@@ -17,7 +17,7 @@ class Network {
   //tworzymy warstwy
   createLayers() {
     let lastLayer = null
-    for (let x = 0; x < this.numberOfLayers; x++) {
+    for (let x = 0; x < this.numberOfLayers; x += 1) {
       if (x == 0) {
         this.layersList[x] = new Layer(x, 2, this.inputsCount)
       } else {
@@ -68,7 +68,7 @@ class Network {
 
     $.each(examples, function(index, example) {
       let output = that.getOutputFromInput(example.input)
-      for (let x = 0; x < output.b.length; x++) {
+      for (let x = 0; x < output.b.length; x += 1) {
         error += Math.pow((output.b[x] - example.output.b[x]), 2)
       }
     })
@@ -121,7 +121,7 @@ class Network {
     let input = example.input
     let that = this
     $.each(this.layersList, function(index, layer) {
-      for (let x = 0; x < layer.numberOfPerceptrons; x++) {
+      for (let x = 0; x < layer.numberOfPerceptrons; x += 1) {
         for (let y = 0; y < layer.inputsCount; y++) {
           sumComponent = that.etha * layerDelta[layer.number].b[x] * input.a[y]
           layer.objectsList[x].addToWeight(y, sumComponent)
