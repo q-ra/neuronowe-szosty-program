@@ -32,7 +32,6 @@ class PositionArm {
     return this.normalize()
   }
 
-  // zwraca znormalizowane wejscie do obrobki przez siec warstwowa (N=2, M=2)
   normalize() {
     // wyjscie
     let output = []

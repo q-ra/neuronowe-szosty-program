@@ -75,7 +75,6 @@ function dataOutput(data) {
 
 //Tu będziemy przehowywac przykład uczący
 function LearningExample(ini, out, exc) {
-
   this.input = ini
   this.output = out
   this.expectedValue = exc
