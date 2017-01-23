@@ -1,32 +1,24 @@
 //Główna klasa
 class Robot {
   constructor() {
-    // Lista przykładów uczących uzupełniana przez metodę randomExamples()
-    this.examples = []
-    // Obiekt ramienia robota
-    this.positionArm
-    // Obiekt sieci
-    this.network
-    // Długości ramion
-    this.a = 75
-    this.b = 75
-    // Pubkt zaczepienia ramienia
-    this.x = 0
-    this.y = 200
-    // Ilość przykładów uczących
-    this.examplesCount = 2500
-    // Ilość kroków uczenia
-    this.learningIterations = 150000
+
+    this.examples = [] // Lista przykładów uczących uzupełniana przez metodę randomExamples()
+    this.positionArm     // Obiekt ramienia robota
+    this.network  // Obiekt sieci
+    this.a = 75  // Długości ramion
+    this.b = 75  // Długości ramion
+    this.x = 0   // Punkt zaczepienia ramienia
+    this.y = 200   // Punkt zaczepienia ramienia
+    this.examplesCount = 2500 // Ilość przykładów uczących
+    this.learningIterations = 150000 // Ilość kroków uczenia
   }
 
   init(args) {
     this.positionArm = new PositionArm(this.a, this.b, this.x, this.y)
-    //warstwy, ilosc perceptronów, wejścia, wyjścia
-    this.network = new Network(4, 5, 2, 2)
-    this.network.init()
-    this.randomLearningExamples()
-
-    this.learnNetwork()
+    this.network = new Network(4, 5, 2, 2) //warstwy, ilosc perceptronów, wejścia, wyjścia
+    this.network.init() //towrzy warstwy sieci
+    this.randomLearningExamples() //losujemy przyklady uczace
+    this.learnNetwork() //uczymy siec
   }
 
   //nauka robota
@@ -34,13 +26,12 @@ class Robot {
     let example
     let error = 0
     for (let i = 0; i < this.learningIterations; i++) {
-      let count = Math.floor((Math.random() * this.examples.length))
-      example = this.examples[count]
-      //console.log(example+"="+count)
-      this.network.learn(example)
+      let count = Math.floor((Math.random() * this.examples.length)) //losowanie przykladu uczacego
+      example = this.examples[count] //wybranie przykladu uczacego
+      this.network.learn(example) //przekazanie przykladu uczacego do sieci
 
       if (i % 2000 == 0) {
-        error = this.network.getError(this.examples)
+        error = this.network.getError(this.examples) //error liczony na podstawie przykladow uczacych
         console.log("Err: " + error)
       }
 
@@ -52,10 +43,10 @@ class Robot {
   randomLearningExamples() {
     while (this.examples.length <= this.examplesCount) {
       // Losuje kąt alfa i beta na których podstawie obliczam punkt dłoni robota
-      let alpha = Math.random() * Math.PI
-      let beta = Math.random() * Math.PI
+      let alpha = Math.random() * Math.PI //Losuje kąt alfa
+      let beta = Math.random() * Math.PI //Losuje kąt beta
       //console.log(alpha+"="+beta)
-      let learningExample = this.positionArm.calculatePosition(alpha, beta)
+      let learningExample = this.positionArm.calculatePosition(alpha, beta) 	//Obliczam punkt dłoni robota
 
       // Wybieram tylko dobre przykłady uczące
       if (this.positionArm.x2 < this.a + this.b &&

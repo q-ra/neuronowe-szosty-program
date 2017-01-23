@@ -2,19 +2,22 @@
 
 class Network {
   constructor(Layers, Objects, inputsCount, outputsCount) {
-    this.numberOfLayers = Layers
-    this.numberOfPerceptrons = Objects
-    this.inputsCount = inputsCount
-    this.outputsCount = outputsCount
-    this.etha = 0.4
-    this.layersList = []
+    //liczba warstw (wszystkich), ilosc perceptronow, liczba wejsc, liczba wyjsc
+    this.numberOfLayers = Layers //liczba warstw
+    this.numberOfPerceptrons = Objects //liczba perceptronów
+    this.inputsCount = inputsCount 	//liczba wejsc
+    this.outputsCount = outputsCount //liczba wyjsc
+    this.etha = 0.4 //stała uczenia się
+    this.layersList = [] //lista warstw
   }
 
   init() {
     this.createLayers()
   }
 
-  //tworzymy warstwy
+  //tworzymy warstwy. Pierwsza warstwa ma dwa perceptrony oraz dwa wejścia, ostatnia warstwa ma również dwa perceptrony
+	// i liczbe wejsc rowna liczbie wyjsc (perceptronow) poprzedniej warstwy (stad numberOfObjects na i-1 warstwie).
+	// init wywoluje stworzenie warstw (czyli stworzenie perceptronow)
   createLayers() {
     let lastLayer = null
     for (let x = 0; x < this.numberOfLayers; x += 1) {
@@ -31,7 +34,7 @@ class Network {
     }
   }
 
-  //wyliczamy nowe wyjscie dla kolejnej warstwy
+	//wyliczamy nowe wyjscie dla kolejnych warstw. W ostatecznosci zwraca nam wyjscie z sieci (dwie wagi z warstwy wyjsciowej)
   getOutputFromInput(inputData) {
     let IDataList = []
     IDataList.push(inputData)
@@ -43,7 +46,8 @@ class Network {
     return out
   }
 
-
+  //liczy 'e' czyli wejscia dla kazdej sieci, i wrzuca to do zmiennejm. Nastepnie liczy f(e) gdyz
+	// wyjscia poprzednich perceptronow sa wejsciami perceptronow z nastepnej warstwy.
   getLayersInputValues(inputData) {
     let IDataList = []
     let layersInputValues = []
@@ -62,33 +66,40 @@ class Network {
   }
 
   //Wylicza error na podstawie wszystkich danych wejściowych
+	//Funkcja błędu, określa jak bardzo niedostosowana jest sieć do zestawu uczącego
   getError(examples) {
     let error = 0
     let that = this
 
     $.each(examples, function(index, example) {
+			// wyliczamy nowe wyjscie dla kolejnej warstwy
       let output = that.getOutputFromInput(example.input)
       for (let x = 0; x < output.b.length; x += 1) {
+        //propagacja bledu czesc 1
+        //http://www-users.mat.umk.pl/~rudy/wsn/wyk/wsn-wyklad-05a-propag.pdf  -strona 32
+        // Ek(n) = 1/2(Zk(n) - Tk(n) )^2
         error += Math.pow((output.b[x] - example.output.b[x]), 2)
       }
     })
 
+		// error dzielony przez 1/2 z powyzszego wzoru
     return error / 2
   }
 
   //Uczy sieć przykładu metodą wstecznej propagacji błędów
   learn(example) {
     // wartosci wejsciowe
-    let inputLayerValues = this.getLayersInputValues(example.input)
+    let inputLayerValues = this.getLayersInputValues(example.input)   //zwraca nam to e, czyli wartosci wejsciowe, potrzebne przy BEP
     // wyjscie z sieci
-    let networkOutput = this.getOutputFromInput(example.input)
+    let networkOutput = this.getOutputFromInput(example.input) //zwraca wyjscie z sieci
     // tablica nowych wyjsc
-    let layerDelta = []
+    let layerDelta = [] //tablica delt, czyli nowych wartosci ktore pomoga w poprawie wag
 
     // liczymy delty dla wszystkich warstw
     let lastLayer = this.numberOfLayers - 1
     let delta
     let error = 0
+		//lecimy od konca, gdyz tak dziala algorytm BEP
     for (let x = lastLayer; x >= 0; x--) {
       // W ostatniej warstwie(wyjściowej) delta liczona jest inaczej
       if (x == lastLayer) {
@@ -97,16 +108,20 @@ class Network {
 
         for (let y = 0; y < 2; y++) {
           error = (example.output.b[y] - networkOutput.b[y])
+          //galaxy - wartosc oczekiwana - wartosc sygnalu wejsciowego
+          //pochodna f sigma
+          // adnotacja 2.3 44 strona
+          // liczymy delte dla kazdej jednostki
           delta[y] = error * this.sigmaDerivative(inputLayerValues[x].a[y])
         }
-        layerDelta[x] = new dataOutput(delta)
+        layerDelta[x] = new dataOutput(delta) //tablica wyliczonych delt dla perceptronow
 
       } else {
         delta = []
         for (let y = 0; y < this.layersList[x].numberOfPerceptrons; y++) {
           delta[y] = 0
           for (let k = 0; k < this.layersList[x + 1].numberOfPerceptrons; k++) {
-            error = layerDelta[x + 1].b[k] * this.layersList[x + 1].objectsList[k].weights[y]
+            error = layerDelta[x + 1].b[k] * this.layersList[x + 1].objectsList[k].weights[y] 	//tutaj uwzgledniamy rowniez poprzednie warstwy
             delta[y] += error * this.sigmaDerivative(inputLayerValues[x].a[y])
           }
           layerDelta[x] = new dataOutput(delta)
@@ -117,6 +132,7 @@ class Network {
     }
 
     // zmiana wag dla wszystkich perceptronów wszystkich warstw
+		// juz po wyliczeniu delty, mam zapamietana ja w layerData, wiec lecimy dalej z poprawa tych wag jak na obrazku
     let sumComponent
     let input = example.input
     let that = this
