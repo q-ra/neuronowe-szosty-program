@@ -12,7 +12,7 @@ class PositionArm {
     this.y2 = 0
     this.piHalf = Math.PI / 2
   }
-  // wylicza polozenie lokcia i dloni dla zadanych katow z przedzialu (0, PI)
+
   calculatePosition(inputAlpha, inputBeta) {
     this.alpha = inputAlpha
     this.beta = inputBeta
@@ -33,12 +33,12 @@ class PositionArm {
   }
 
   normalize() {
-    // wyjscie
+
     let output = []
     output[0] = this.alpha / Math.PI * 0.6 + 0.2
     output[1] = this.beta / Math.PI * 0.6 + 0.2
     output = new dataOutput(output)
-    // wejscie
+
     let input = []
     input[0] = (this.x2 - this.x0) / (this.a + this.b) - 0.2
     input[1] = (this.y2 - this.y0) / (this.a + this.b) - 0.2

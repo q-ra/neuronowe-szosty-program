@@ -2,7 +2,7 @@ let sizeof = 50
 let lines = []
 let arm
 let end
-//tworzymy okno o wymiarach 'sizeof*sizeof'
+
 function initializeWindow(sizeof) {
   $('#svg').svg()
   let svg = $('#svg').svg('get')
@@ -11,8 +11,8 @@ function initializeWindow(sizeof) {
   })
 }
 
-$(document).ready(function() {
-  //elementy interfejsu
+$(document).ready(function () {
+
   initializeWindow(sizeof)
 
   let svg = $('#svg').svg('get')
@@ -43,10 +43,10 @@ $(document).ready(function() {
       y: evt.clientY - 105
     }
   }
-  $("svg").click(function(e) {
+  $("svg").click(function (e) {
     let coord = getMousePos(svg, e)
     robot.updateHand(coord)
-    count++
+    count += 1
   })
 
 
@@ -55,25 +55,25 @@ $(document).ready(function() {
   robot.init()
 })
 
-//Tu będziemy przechowywać wejście
+
 function dataInput(data) {
-  //alert(data[0])
+
   this.a = []
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i += 1) {
     this.a[i] = data[i]
   }
 }
 
-//Tu będziemy przechowywać wyjście
+
 function dataOutput(data) {
   this.b = []
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i += 1) {
     this.b[i] = data[i]
   }
 }
 
 
-//Tu będziemy przehowywac przykład uczący
+
 function LearningExample(ini, out, exc) {
   this.input = ini
   this.output = out
