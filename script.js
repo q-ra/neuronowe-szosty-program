@@ -49,10 +49,7 @@ $(document).ready(function () {
     count += 1
   })
 
-
-
   let robot = new Robot()
-  robot.init()
 })
 
 

@@ -1,7 +1,6 @@
 
 class Robot {
   constructor() {
-
     this.examples = []
     this.positionArm
     this.network
@@ -11,16 +10,11 @@ class Robot {
     this.y = 200
     this.examplesCount = 2500
     this.learningIterations = 150000
-  }
-
-  init(args) {
     this.positionArm = new PositionArm(this.a, this.b, this.x, this.y)
     this.network = new Network(4, 5, 2, 2)
-    this.network.init()
     this.randomLearningExamples()
     this.learnNetwork()
   }
-
 
   learnNetwork() {
     let example
