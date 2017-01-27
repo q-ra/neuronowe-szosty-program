@@ -13,7 +13,7 @@ class PositionArm {
     this.piHalf = Math.PI / 2
   }
 
-  calculatePosition(inputAlpha, inputBeta) {
+  calculatePositionArm(inputAlpha, inputBeta) {
     this.alpha = inputAlpha
     this.beta = inputBeta
 

@@ -1,19 +1,9 @@
 class Perceptron {
-  constructor(numberOfInputs) {
+  constructor(weightsCount) {
     this.weights = []
-    this.weightsCount = numberOfInputs
+    this.weightsCount = weightsCount
     this.randomWeights()
   }
-
-  sigma(x) {
-    return 1 / (1 + Math.exp(-x))
-  }
-
-
-  sigmaDerivative(x) {
-    return this.sigma(x) * (1 - this.sigma(x))
-  }
-
 
   randomWeights() {
     for (let x = 0; x < this.weightsCount; x += 1) {
@@ -31,7 +21,7 @@ class Perceptron {
 
 
   calculateOutput(inputData) {
-    return this.sigma(this.calculateValue(inputData))
+    return sigma(this.calculateValue(inputData))
   }
 
 

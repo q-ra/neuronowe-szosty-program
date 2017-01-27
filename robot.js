@@ -19,7 +19,7 @@ class Robot {
   learnNetwork() {
     let example
     let error = 0
-    for (let i = 0; i < this.learningIterations; i++) {
+    for (let i = 0; i < this.learningIterations; i += 1) {
       let count = Math.floor((Math.random() * this.examples.length))
       example = this.examples[count]
       this.network.learn(example)
@@ -40,7 +40,7 @@ class Robot {
       let alpha = Math.random() * Math.PI
       let beta = Math.random() * Math.PI
 
-      let learningExample = this.positionArm.calculatePosition(alpha, beta)
+      let learningExample = this.positionArm.calculatePositionArm(alpha, beta)
 
 
       if (this.positionArm.x2 < this.a + this.b &&
@@ -70,7 +70,7 @@ class Robot {
     inputAlpha = (outputData.b[0] - 0.2) / 0.6 * Math.PI
     inputBeta = (outputData.b[1] - 0.2) / 0.6 * Math.PI
 
-    this.positionArm.calculatePosition(inputAlpha, inputBeta)
+    this.positionArm.calculatePositionArm(inputAlpha, inputBeta)
 
 
     let svg = $('#svg').svg('get')

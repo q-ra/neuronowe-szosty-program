@@ -1,5 +1,3 @@
-
-
 class Network {
   constructor(Layers, Objects, inputsCount, outputsCount) {
     this.numberOfLayers = Layers
@@ -30,7 +28,7 @@ class Network {
   getOutputFromInput(inputData) {
     let IDataList = []
     IDataList.push(inputData)
-    $.each(this.layersList, function(index, layer) {
+    $.each(this.layersList, function (index, layer) {
       let outputData = layer.getOutputs(IDataList[IDataList.length - 1])
       IDataList.push(new dataInput(outputData.b))
     })
@@ -47,7 +45,7 @@ class Network {
     let outputValue
     let outputData
 
-    $.each(this.layersList, function(index, layer) {
+    $.each(this.layersList, function (index, layer) {
       outputValue = layer.getValues(IDataList[IDataList.length - 1])
       layersInputValues.push(new dataInput(outputValue.b))
       outputData = layer.getOutputs(IDataList[IDataList.length - 1], index)
@@ -63,7 +61,7 @@ class Network {
     let error = 0
     let that = this
 
-    $.each(examples, function(index, example) {
+    $.each(examples, function (index, example) {
 
       let output = that.getOutputFromInput(example.input)
       for (let x = 0; x < output.b.length; x += 1) {
@@ -104,7 +102,7 @@ class Network {
 
 
 
-          delta[y] = error * this.sigmaDerivative(inputLayerValues[x].a[y])
+          delta[y] = error * sigmaDerivative(inputLayerValues[x].a[y])
         }
         layerDelta[x] = new dataOutput(delta)
 
@@ -114,7 +112,7 @@ class Network {
           delta[y] = 0
           for (let k = 0; k < this.layersList[x + 1].numberOfPerceptrons; k++) {
             error = layerDelta[x + 1].b[k] * this.layersList[x + 1].objectsList[k].weights[y]
-            delta[y] += error * this.sigmaDerivative(inputLayerValues[x].a[y])
+            delta[y] += error * sigmaDerivative(inputLayerValues[x].a[y])
           }
           layerDelta[x] = new dataOutput(delta)
         }
@@ -128,7 +126,7 @@ class Network {
     let sumComponent
     let input = example.input
     let that = this
-    $.each(this.layersList, function(index, layer) {
+    $.each(this.layersList, function (index, layer) {
       for (let x = 0; x < layer.numberOfPerceptrons; x += 1) {
         for (let y = 0; y < layer.inputsCount; y++) {
           sumComponent = that.etha * layerDelta[layer.number].b[x] * input.a[y]
@@ -137,15 +135,6 @@ class Network {
       }
       input = new dataInput(layer.getOutputs(input).b)
     })
-  }
-
-  sigma(x) {
-    return 1 / (1 + Math.exp(-x))
-  }
-
-
-  sigmaDerivative(x) {
-    return this.sigma(x) * (1 - this.sigma(x))
   }
 
 }
