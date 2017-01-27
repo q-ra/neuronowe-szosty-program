@@ -1,9 +1,9 @@
 
 class Layer {
-  constructor(num, numObject, numberOfInputs) {
-    this.inputsCount = numberOfInputs
+  constructor(num, numberOfPerceptrons, inputsCount) {
+    this.inputsCount = inputsCount
     this.number = num
-    this.numberOfPerceptrons = numObject
+    this.numberOfPerceptrons = numberOfPerceptrons
     this.objectsList = []
     this.createObjects()
   }
